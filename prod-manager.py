@@ -164,12 +164,12 @@ class ProdManager():
         print("STARTING PROD MANAGER")
         while True:
             now = datetime.now()
-            # if now.hour < 8 or now.hour >= 22:
-            #     print()
-            #     print("=======NIGHT HOURS=======")
-            #     print()
-            #     self.sleep(300)
-            #     continue
+            if now.hour < 8 or now.hour >= 22:
+                print()
+                print("=======NIGHT HOURS=======")
+                print()
+                self.sleep(300)
+                continue
             try:
                 self.check_whitespace()
                 if started == False:
@@ -182,8 +182,8 @@ class ProdManager():
                     count = 0
                 backoff_time = 1  # Reset backoff time after a successful request
 
-            except (ConnectionAbortedError, ConnectionResetError, TimeoutError, RemoteDisconnected, gaierror, timeout, requests.exceptions.HTTPError) as e:
-            # except:
+            # except (ConnectionAbortedError, ConnectionResetError, TimeoutError, RemoteDisconnected, gaierror, timeout, requests.exceptions.HTTPError) as e:
+            except:
                 print("CONNECTION ABORTED")
                 print("RESTARTING.....")
                 start = time.perf_counter()
