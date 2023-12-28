@@ -36,7 +36,7 @@ class ProdManager():
             "user": os.getenv("TODO_DUE_PUSHOVER_USER"),
             "title": "Overdue Todoist Tasks!",
             "message": ".",
-            "sound": "bike"
+            "sound": "gamelan"
         }
         self.business = GoogleCalendar(os.getenv("BUSINESS_CALENDAR_ID"))
         self.maintenance = GoogleCalendar(os.getenv("MAINTENANCE_CALENDAR_ID"))
