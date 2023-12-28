@@ -69,7 +69,6 @@ class ProdManager():
         all_events = []
         
         for name, calendar in cal_dic.items():
-            # print(name)
             events = list(calendar.get_events(date_before, date_after, single_events=True))
             if events != []:
                 events += [name]
@@ -82,7 +81,6 @@ class ProdManager():
         
     def check_whitespace(self):
         print('checking for whitespace...')
-            # init(abvph6vc25gbnqy5e3cc8x3w2hs3qg)
         all_events = self.get_all_current_events(cal_dic)
         self.all_event_names = [event_group[0].summary for event_group in all_events]
         count =0
@@ -96,10 +94,7 @@ class ProdManager():
                     count +=1
 
         if count == 0:
-            # message = f"Make sure to Make an Intention in 5 min \n Sent at {str(datetime.now())[:19]}"
-            # self.cal_pushover['message'] = message
             requests.post("https://api.pushover.net/1/messages.json", json=self.cal_pushover)
-                # Client("ueuvg7y4ympjizg3ekmya86zfw92im").send_message(message, title="Whitespace on Calendar")
             print(datetime.now().astimezone())
             print('Failed! No Event Happening Right Now!!!')
             print(all_events)
@@ -108,15 +103,14 @@ class ProdManager():
             print(datetime.now().astimezone())
             print('Passed! Event Happening Right Now!!!')
             print(all_events)
-        # self.sleep(300)
 
     def check_empty_inbox(self, df_tasks, projects):
-        # tasks = self.api.get_tasks()
+
         print("checking todoist inbox...")
         inbox_id = [project['id'] for project in projects if project['name'] == 'Inbox'][0]
-        # check if inbox is empty (where section id = None)
+
         inbox = df_tasks[(df_tasks['project_id'] == inbox_id) & (df_tasks['section_id'] != '68959271')]
-        # print(inbox[['section_id']])
+        
         if len(inbox) != 0:
             print()
             print("TODOIST INBOX NON EMPTY!!")
@@ -148,8 +142,6 @@ class ProdManager():
             print()
             resp = requests.post("https://api.pushover.net/1/messages.json", json=self.todo_due_pushover)
             return
-
-
 
     def check_todoist(self):
         print("checking todoist...")
