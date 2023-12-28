@@ -9,6 +9,7 @@ __pycache__/
 # Virtual environments
 bin/
 pyvenv.cfg
+local/
 
 # Distribution / packaging
 .Python

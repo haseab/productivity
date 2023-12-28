@@ -21,7 +21,8 @@ class ProdManager():
             "token": os.getenv("CAL_PUSHOVER_TOKEN"),
             "user": os.getenv("CAL_PUSHOVER_USER"),
             "message": ".",
-            "title": "Whitespace!"
+            "title": "Whitespace!",
+            "sound": "bike"
         }
         self.todo_inbox_pushover = {
             "token": os.getenv("TODO_INBOX_PUSHOVER_TOKEN"),
@@ -56,8 +57,8 @@ class ProdManager():
             time.sleep(seconds/(seconds*divisor))
 
     def create_calendar_dic(self):
-        calendar_list = [self.business, self.maintenance, self.sprints, self.adhoc, self.habits, self.projects, self.social, self.technicalities, self.understanding, self.fptstudio]#, self.micropay, self.wycik, self.president]
-        string_list = ["Business", "Maintenance", "Sprints", "Ad-Hoc", "Gradual Habits", "Projects", "Social", "Technicalities", "Understanding", "fpt-studio"]#, "micropay", "Neill-Wycik", "President"]
+        calendar_list = [self.business, self.maintenance, self.sprints, self.adhoc, self.habits, self.projects, self.social, self.technicalities, self.understanding, self.fptstudio]
+        string_list = ["Business", "Maintenance", "Sprints", "Ad-Hoc", "Gradual Habits", "Projects", "Social", "Technicalities", "Understanding", "fpt-studio"]
         cal_dic = {}
         for string, cal in zip(string_list, calendar_list):
             cal_dic[string] = cal
@@ -146,8 +147,8 @@ class ProdManager():
     def check_todoist(self):
         print("checking todoist...")
         print("getting tasks...")
-        tasks = requests.get("https://api.todoist.com/rest/v2/tasks", headers={'Authorization':f"Bearer {os.getenv("BUSINESS_CALENDAR_ID")}"}).json()
-        projects = requests.get("https://api.todoist.com/rest/v2/projects", headers={'Authorization':f"Bearer {os.getenv("BUSINESS_CALENDAR_ID")}"}).json()
+        tasks = requests.get("https://api.todoist.com/rest/v2/tasks", headers={'Authorization':f"Bearer {os.getenv('BUSINESS_CALENDAR_ID')}"}).json()
+        projects = requests.get("https://api.todoist.com/rest/v2/projects", headers={'Authorization':f"Bearer {os.getenv('BUSINESS_CALENDAR_ID')}"}).json()
         df_tasks = pd.DataFrame(tasks)
         self.check_empty_inbox(df_tasks, projects)
         self.check_empty_due_today(df_tasks)
@@ -163,12 +164,12 @@ class ProdManager():
         print("STARTING PROD MANAGER")
         while True:
             now = datetime.now()
-            if now.hour < 8 or now.hour >= 22:
-                print()
-                print("=======NIGHT HOURS=======")
-                print()
-                self.sleep(300)
-                continue
+            # if now.hour < 8 or now.hour >= 22:
+            #     print()
+            #     print("=======NIGHT HOURS=======")
+            #     print()
+            #     self.sleep(300)
+            #     continue
             try:
                 self.check_whitespace()
                 if started == False:
@@ -181,8 +182,8 @@ class ProdManager():
                     count = 0
                 backoff_time = 1  # Reset backoff time after a successful request
 
-            # except (ConnectionAbortedError, ConnectionResetError, TimeoutError, RemoteDisconnected, gaierror, timeout, requests.exceptions.HTTPError) as e:
-            except:
+            except (ConnectionAbortedError, ConnectionResetError, TimeoutError, RemoteDisconnected, gaierror, timeout, requests.exceptions.HTTPError) as e:
+            # except:
                 print("CONNECTION ABORTED")
                 print("RESTARTING.....")
                 start = time.perf_counter()
