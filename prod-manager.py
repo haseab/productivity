@@ -147,8 +147,8 @@ class ProdManager():
     def check_todoist(self):
         print("checking todoist...")
         print("getting tasks...")
-        tasks = requests.get("https://api.todoist.com/rest/v2/tasks", headers={'Authorization':f"Bearer {os.getenv('BUSINESS_CALENDAR_ID')}"}).json()
-        projects = requests.get("https://api.todoist.com/rest/v2/projects", headers={'Authorization':f"Bearer {os.getenv('BUSINESS_CALENDAR_ID')}"}).json()
+        tasks = requests.get("https://api.todoist.com/rest/v2/tasks", headers={'Authorization':f"Bearer {os.getenv('TODOIST_API_KEY')}"}).json()
+        projects = requests.get("https://api.todoist.com/rest/v2/projects", headers={'Authorization':f"Bearer {os.getenv('TODOIST_API_KEY')}"}).json()
         df_tasks = pd.DataFrame(tasks)
         self.check_empty_inbox(df_tasks, projects)
         self.check_empty_due_today(df_tasks)
