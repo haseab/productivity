@@ -91,7 +91,7 @@ class ProdManager():
             now = datetime.now().astimezone()
             print("TYPES: ", type(event.end), type(event.start))
             if type(event.end) != date and type(event.start) != date:
-                if event.end != None and now < event.end and now > event.start:
+                if event.end != None and now + timedelta(minutes=5) < event.end and now > event.start:
                     count +=1
 
         if count == 0:
