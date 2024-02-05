@@ -188,8 +188,8 @@ class ProdManager():
                     count = 0
                 backoff_time = 1  # Reset backoff time after a successful request
 
-            except (ConnectionAbortedError, ConnectionResetError, TimeoutError, RemoteDisconnected, gaierror, timeout, requests.exceptions.HTTPError) as e:
-            # except:
+            # except (ConnectionAbortedError, ConnectionResetError, TimeoutError, RemoteDisconnected, gaierror, timeout, requests.exceptions.HTTPError) as e:
+            except:
                 print("CONNECTION ABORTED")
                 print("RESTARTING.....")
                 start = time.perf_counter()
