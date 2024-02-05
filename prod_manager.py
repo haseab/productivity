@@ -92,13 +92,14 @@ class ProdManager():
         for event_group in all_current_events:
             print(event_group)
             event = event_group[0]
-            next_event = self.get_all_current_events(cal_dic, start_time=event.end, end_time=event.end + timedelta(minutes=5))[0]
-
             now = datetime.now().astimezone()
+            next_event_group = self.get_all_current_events(cal_dic, start_time=event.end, end_time=event.end + timedelta(minutes=5))
+            next_event = next_event_group[0] if next_event_group else None
             # Check if the event is not an all-day event and it's currently happening
-            if isinstance(event.end, datetime) and now > event.start and (now < event.end - timedelta(minutes=5) or now < next_event[0].start):
-                count += 1
-
+            
+            if isinstance(event.end, datetime) and now > event.start:
+                if now <= event.end - timedelta(minutes=5) or (next_event and now <= next_event[0].start):
+                    count += 1
         if count == 0:
             requests.post("https://api.pushover.net/1/messages.json", json=self.cal_pushover)
             print(datetime.now().astimezone())
@@ -187,8 +188,8 @@ class ProdManager():
                     count = 0
                 backoff_time = 1  # Reset backoff time after a successful request
 
-            # except (ConnectionAbortedError, ConnectionResetError, TimeoutError, RemoteDisconnected, gaierror, timeout, requests.exceptions.HTTPError) as e:
-            except:
+            except (ConnectionAbortedError, ConnectionResetError, TimeoutError, RemoteDisconnected, gaierror, timeout, requests.exceptions.HTTPError) as e:
+            # except:
                 print("CONNECTION ABORTED")
                 print("RESTARTING.....")
                 start = time.perf_counter()
