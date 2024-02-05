@@ -64,17 +64,20 @@ class ProdManager():
             cal_dic[string] = cal
         return cal_dic
 
-    def get_all_current_events(self, cal_dic):
-        date_before = datetime.now().astimezone()
-        date_after = datetime.now().astimezone() + timedelta(minutes=0.5)
-        all_events = []
+    def get_all_current_events(self, cal_dic, start_time=None, end_time=None):
+        if start_time is None:
+            start_time = datetime.now().astimezone()
+        if end_time is None:
+            end_time = start_time + timedelta(minutes=0.5)
+        all_current_events = []
         
         for name, calendar in cal_dic.items():
-            events = list(calendar.get_events(date_before, date_after, single_events=True))
-            if events != []:
-                events += [name]
-                all_events += [events]
-        return all_events
+            events = list(calendar.get_events(start_time, end_time, single_events=True))
+            if events:
+                events += [name]  # Append the calendar name to each event list
+                all_current_events += [events]
+        return all_current_events
+    
 
     def run_ifttt(self):
         event_name = "whitespace"
@@ -82,28 +85,30 @@ class ProdManager():
         
     def check_whitespace(self):
         print('checking for whitespace...')
-        all_events = self.get_all_current_events(cal_dic)
-        self.all_event_names = [event_group[0].summary for event_group in all_events]
+        ## This gets all of the calendar events that are overlapping and happening at the same time
+        all_current_events = self.get_all_current_events(cal_dic)
+        self.all_current_events_names = [event_group[0].summary for event_group in all_current_events]
         count =0
-        for event_group in all_events:
+        for event_group in all_current_events:
             print(event_group)
             event = event_group[0]
+            next_event = self.get_all_current_events(cal_dic, start_time=event.end, end_time=event.end + timedelta(minutes=5))[0]
+
             now = datetime.now().astimezone()
-            print("TYPES: ", type(event.end), type(event.start))
-            if type(event.end) != date and type(event.start) != date:
-                if event.end != None and now + timedelta(minutes=5) < event.end and now > event.start:
-                    count +=1
+            # Check if the event is not an all-day event and it's currently happening
+            if isinstance(event.end, datetime) and now > event.start and (now < event.end - timedelta(minutes=5) or now < next_event[0].start):
+                count += 1
 
         if count == 0:
             requests.post("https://api.pushover.net/1/messages.json", json=self.cal_pushover)
             print(datetime.now().astimezone())
             print('Failed! No Event Happening Right Now!!!')
-            print(all_events)
+            print(all_current_events)
             print("sent pushover notification")
         else:
             print(datetime.now().astimezone())
             print('Passed! Event Happening Right Now!!!')
-            print(all_events)
+            print(all_current_events)
 
     def check_empty_inbox(self, df_tasks, projects):
 
@@ -134,7 +139,7 @@ class ProdManager():
         count = 0
         for task in past_due['content'].values:
             print(task)
-            if task not in self.all_event_names:
+            if task not in self.all_current_events_names:
                 count +=1
         if count >= 1:
             print()
