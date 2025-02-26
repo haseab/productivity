@@ -49,6 +49,7 @@ class ProdManager():
         self.technicalities = GoogleCalendar(os.getenv("TECHNICALITIES_CALENDAR_ID"))
         self.understanding = GoogleCalendar(os.getenv("UNDERSTANDING_CALENDAR_ID"))
         self.fptstudio = GoogleCalendar(os.getenv("FPTSTUDIO_CALENDAR_ID"))
+        self.wycik = GoogleCalendar(os.getenv("WYCIK_CALENDAR_ID"))
         
     def sleep(self, seconds, divisor=4):
         print(f"Sleeping for {seconds} seconds")
@@ -57,8 +58,8 @@ class ProdManager():
             time.sleep(seconds/(seconds*divisor))
 
     def create_calendar_dic(self):
-        calendar_list = [self.business, self.maintenance, self.sprints, self.adhoc, self.habits, self.projects, self.social, self.technicalities, self.understanding, self.fptstudio]
-        string_list = ["Business", "Maintenance", "Sprints", "Ad-Hoc", "Gradual Habits", "Projects", "Social", "Technicalities", "Understanding", "fpt-studio"]
+        calendar_list = [self.business, self.maintenance, self.sprints, self.adhoc, self.habits, self.projects, self.social, self.technicalities, self.understanding, self.fptstudio, self.wycik]
+        string_list = ["Business", "Maintenance", "Sprints", "Ad-Hoc", "Gradual Habits", "Projects", "Social", "Technicalities", "Understanding", "fpt-studio", "Wycik"]
         cal_dic = {}
         for string, cal in zip(string_list, calendar_list):
             cal_dic[string] = cal
